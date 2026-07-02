@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin | La Más Prendida 105.1 FM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1><i class="fas fa-crown"></i> Panel de Administración</h1>
+        <p>La Más Prendida 105.1 FM - Control total de la transmisión</p>
+        <button id="closeAdminBtn" class="close-btn"><i class="fas fa-times"></i> Cerrar panel</button>
+        <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
+    </div>
+
+    <div class="admin-grid">
+    <!--Configuración de Calidad -->
+        <div class="admin-card">
+            <h3><i class="fas fa-sliders-h"></i> Calidad de Stream</h3>
+            <div class="control-group">
+                <label>Resolución / Bitrate</label>
+                <select id="qualitySelect">
+                    <option value="high">Alta (1080p - 4 Mbps)</option>
+                    <option value="medium" selected>Media (720p - 2.5 Mbps)</option>
+                    <option value="low">Baja (480p - 1 Mbps)</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Audio Bitrate</label>
+                <select id="audioBitrate">
+                    <option value="320">320 kbps (Alta fidelidad)</option>
+                    <option value="192" selected>192 kbps (Recomendado)</option>
+                    <option value="128">128 kbps (Ahorro datos)</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Buffer (segundos)</label>
+                <input type="number" id="bufferTime" value="4" min="1" max="15">
+            </div>
+            <span class="quality-badge" id="currentQualityBadge">Calidad: Media</span>
+            <div class="admin-note">* Los cambios se aplican automáticamente a los usuarios.</div>
+        </div>
+
+        <!-- Control de Emisión -->
+        <div class="admin-card">
+            <h3><i class="fas fa-tower-broadcast"></i> Control de Emisión</h3>
+            <div class="control-group">
+                <label>Servidor RTMP / Endpoint</label>
+                <input type="text" id="streamServer" value="rtmp://stream.lamasprendida.com/live">
+            </div>
+            <div class="control-group">
+                <label>Clave de transmisión (Stream Key)</label>
+                <input type="password" id="streamKey" value="lamasprendida2026">
+            </div>
+            <div class="control-group">
+                <label>ID de transmisión (visible para usuarios)</label>
+                <input type="text" id="streamId" value="LMP-2026-001">
+            </div>
+            <button class="btn-stream-control live" id="startStreamBtn"><i class="fas fa-play-circle"></i> Iniciar transmisión</button>
+            <button class="btn-stream-control" id="stopStreamBtn"><i class="fas fa-stop-circle"></i> Detener transmisión</button>
+            <div class="admin-note">🔐 Control maestro de la emisión en vivo.</div>
+        </div>
+
+        <!--  Monitoreo y Estadísticas -->
+        <div class="admin-card">
+            <h3><i class="fas fa-chart-line"></i> Monitoreo en Vivo</h3>
+            <p><i class="fas fa-eye"></i> Espectadores actuales: <strong class="stat-value" id="viewerCountDisplay">24</strong></p>
+            <div class="control-group">
+                <label>Modificar espectadores (simulación)</label>
+                <input type="number" id="manualViewers" value="24" min="1" max="500">
+                <button id="updateViewersBtn" class="small-btn">Actualizar</button>
+            </div>
+            <p><i class="fas fa-microphone-alt"></i> Estado: <span id="streamStateBadge" style="color:var(--rojo-principal);">🔴 EN VIVO</span></p>
+            <p><i class="fas fa-clock"></i> Tiempo en aire: <span id="uptime">00:00:00</span></p>
+            <p><i class="fas fa-wifi"></i> Calidad activa: <span id="adminQualityLabel">720p</span></p>
+            <p><i class="fas fa-chart-simple"></i> Pico máximo: <span id="peakViewers">24</span></p>
+            <button class="btn-stream-control" id="refreshStatsBtn"><i class="fas fa-sync-alt"></i> Refrescar datos</button>
+        </div>
+
+        <!-- Personalización del Stream -->
+        <div class="admin-card">
+            <h3><i class="fas fa-pen-fancy"></i> Personalización</h3>
+            <div class="control-group">
+                <label>Título del Stream en vivo</label>
+                <input type="text" id="streamTitle" value="🎙️ En Vivo: La Más Prendida 105.1 FM">
+            </div>
+            <div class="control-group">
+                <label>Subtítulo / Descripción</label>
+                <input type="text" id="streamSubtitle" value="Transmisión exclusiva · La mejor música y contenido">
+            </div>
+            <div class="control-group">
+                <label>Mensaje de bienvenida (Chat)</label>
+                <input type="text" id="welcomeMessage" value="¡Bienvenidos a la transmisión exclusiva!">
+            </div>
+            <div class="control-group">
+                <label>Color del chat (hover/bordes)</label>
+                <input type="color" id="chatAccentColor" value="#FFD700">
+            </div>
+            <button id="applyPersonalizationBtn" class="small-btn"><i class="fas fa-save"></i> Aplicar cambios</button>
+            <div class="admin-note">* Personaliza la experiencia visual de los usuarios.</div>
+        </div>
+
+        <!-- Apariencia y Branding -->
+        <div class="admin-card">
+            <h3><i class="fas fa-palette"></i> Apariencia & Branding</h3>
+            <div class="control-group">
+                <label>Nombre del Locutor / Anfitrión</label>
+                <input type="text" id="announcerName" value="El Mandamás">
+            </div>
+            <div class="control-group">
+                <label>Frase del día</label>
+                <input type="text" id="dailyPhrase" value="🎵 ¡Arriba ese ánimo con La Más Prendida!">
+            </div>
+            <div class="control-group">
+                <label>Color primario (Rojo)</label>
+                <input type="color" id="primaryColor" value="#E31B23">
+            </div>
+            <div class="control-group">
+                <label>Color secundario (Naranja)</label>
+                <input type="color" id="secondaryColor" value="#F58220">
+            </div>
+            <button id="applyBrandingBtn" class="small-btn"><i class="fas fa-paintbrush"></i> Aplicar estilo</button>
+            <div class="admin-note">* Cambia la apariencia general de la página de usuario.</div>
+        </div>
+
+        <!-- Redes Sociales -->
+        <div class="admin-card">
+            <h3><i class="fas fa-share-alt"></i> Redes Sociales</h3>
+            <div class="control-group">
+                <label>URL de Facebook</label>
+                <input type="url" id="facebookUrl" value="https://www.facebook.com/LamasPrendida105.1fm">
+            </div>
+            <div class="control-group">
+                <label>URL de Instagram</label>
+                <input type="url" id="instagramUrl" value="https://instagram.com/lamasprendida">
+            </div>
+            <div class="control-group">
+                <label>URL de WhatsApp / Canal</label>
+                <input type="url" id="whatsappUrl" value="https://wa.me/529511234567">
+            </div>
+            <div class="control-group">
+                <label>URL de TikTok</label>
+                <input type="url" id="tiktokUrl" value="https://tiktok.com/@lamasprendida">
+            </div>
+            <button id="applySocialBtn" class="small-btn"><i class="fas fa-link"></i> Actualizar enlaces</button>
+            <div class="admin-note">* Los enlaces se mostrarán en el footer y header de la página de usuario.</div>
+        </div>
+
+        <!--Acciones Rápidas y Mantenimiento -->
+        <div class="admin-card">
+            <h3><i class="fas fa-bolt"></i> Acciones Rápidas</h3>
+            <button id="sendGlobalNotificationBtn" class="btn-stream-control" style="background:#FFD700; color:#000;"><i class="fas fa-bell"></i> Enviar notificación global</button>
+            <button id="resetViewersBtn" class="btn-stream-control" style="background:#555;"><i class="fas fa-chart-line"></i> Resetear contador a 0</button>
+            <button id="exportConfigBtn" class="btn-stream-control" style="background:#2c2c2c;"><i class="fas fa-download"></i> Exportar configuración</button>
+            <button id="importConfigBtn" class="btn-stream-control" style="background:#2c2c2c;"><i class="fas fa-upload"></i> Importar configuración</button>
+            <input type="file" id="importFile" style="display:none;" accept=".json">
+            <div class="admin-note">⚠️ Herramientas de mantenimiento y control.</div>
+        </div>
+    </div>
+
+    <div class="admin-footer">
+        <p><i class="fas fa-shield-alt"></i> Panel exclusivo para administrador - Todos los cambios afectan la experiencia de usuarios en tiempo real.</p>
+    </div>
+</div>
+
+<script src="admin-script.js"></script>
+</body>
+</html>
