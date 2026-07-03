@@ -12,17 +12,11 @@
     <title>La Más Prendida 105.1 FM | En Vivo</title>
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/jpeg" href="/img/imgLMP.jpg">
-    <!-- Preload key visual assets for faster LCP (Largest Contentful Paint) -->
+
+    <!-- Preload -->
     <link rel="preload" as="image" href="/img/imgLMP.jpg" fetchpriority="high">
 
-    <!--
-        ANTI-FLASH SCRIPT — Runs synchronously before ANY CSS loads.
-        Three-layer approach:
-          1. Apply correct data-theme from localStorage (prevents wrong theme)
-          2. Paint background-color directly on <html> (prevents white flash)
-          3. Add 'preload' class to suppress CSS transitions during initial render
-        The 'preload' class is removed by main.js after first paint.
-    -->
+    <!-- Anti‑flash script -->
     <script>
         (function () {
             try {
@@ -33,31 +27,29 @@
                 html.setAttribute('data-theme', theme);
                 html.style.backgroundColor = bg;
                 html.style.colorScheme = theme === 'light' ? 'light' : 'dark';
-                html.classList.add('preload'); // Suppresses transitions on initial load
+                html.classList.add('preload');
             } catch (e) { }
         })();
     </script>
 
-    <!-- Preconnect to CDNs for faster loading -->
+    <!-- Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://player.vimeo.com">
+
+    <!-- Fuentes y Font Awesome -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <!--
-        CSS cargado como link bloqueante de render (render-blocking).
-        El navegador NO pinta ningún pixel hasta que este CSS esté disponible,
-        eliminando el FOUC (Flash of Unstyled Content) por completo.
-        Vite lo procesa y empaqueta correctamente tanto en dev como en producción.
-    -->
+    <!-- CSS principal -->
     <link rel="stylesheet" href="/src/styles/user-styles.css">
 
-    <!-- Vimeo Player SDK -->
+    <!-- Vimeo Player SDK (cargado bajo demanda) -->
     <script src="https://player.vimeo.com/api/player.js" defer></script>
-    <!-- Vite entry point (solo JS — CSS ya está en el link de arriba) -->
+
+    <!-- JavaScript modular (entry point) -->
     <script type="module" src="/src/main.js"></script>
 </head>
 
@@ -68,7 +60,7 @@
         <div class="header__inner">
             <div class="header__brand">
                 <img src="/img/imgLMP.jpg" alt="La Más Prendida" class="header__logo" width="48" height="48"
-                    loading="eager">
+                    loading="eager" decoding="async">
                 <div class="header__text">
                     <h1 class="header__title">La Más <span>Prendida</span></h1>
                     <p class="header__subtitle">105.1 FM · Ocotlán de Morelos, Oax.</p>
@@ -82,13 +74,14 @@
         </div>
     </header>
 
-    <!-- ===== MAIN ===== -->
+    <!-- ===== MAIN CONTENT ===== -->
     <main>
-        <!-- ===== PLAYER ===== -->
+
+        <!-- ===== PLAYER SECTION (UNIFICADA: INICIO + DIRECTO) ===== -->
         <section class="player-section" id="playerSection">
             <div class="container">
                 <div class="player-card">
-                    <!-- Player Header -->
+                    <!-- Cabecera -->
                     <div class="player-card__header">
                         <div class="player-card__header-left">
                             <div class="sound-bars" id="soundBars">
@@ -107,20 +100,26 @@
                         </div>
                     </div>
 
-                    <!-- Video -->
+                    <!-- Reproductor Vimeo -->
                     <div class="player-card__video" id="videoWrapper">
+                        <!-- Placeholder (se muestra cuando no hay video o durante la carga) -->
                         <div class="player-card__placeholder" id="playerPlaceholder">
                             <img src="/img/imgLMP.jpg" alt="La Más Prendida 105.1 FM" width="1280" height="720"
-                                loading="eager">
-                            <div class="player-card__placeholder-overlay">
+                                loading="eager" decoding="async">
+                            <div class="player-card__placeholder-overlay" id="placeholderOverlay">
                                 <i class="fas fa-satellite-dish"></i>
-                                <p>Livestream próximamente</p>
-                                <span>Prepárate para escuchar en línea</span>
+                                <p id="placeholderTitle">Cargando transmisión...</p>
+                                <span id="placeholderSub">Prepárate para escuchar en línea</span>
+                                <!-- Botón de reintento (visible solo en error) -->
+                                <button class="btn-retry" id="retryBtn" style="display:none;">
+                                    <i class="fas fa-redo"></i> Reintentar
+                                </button>
                             </div>
                         </div>
+                        <!-- El iframe se inserta dinámicamente aquí -->
                     </div>
 
-                    <!-- Controls -->
+                    <!-- Controles -->
                     <div class="player-card__controls">
                         <button class="ctrl-btn" id="playPauseBtn" aria-label="Reproducir o pausar">
                             <i class="fas fa-play" id="playPauseIcon"></i>
@@ -144,18 +143,18 @@
                     </div>
                 </div>
 
-                <!-- Background audio tip (mobile only) -->
+                <!-- Tip para audio en segundo plano (solo móvil) -->
                 <div class="bg-audio-tip" id="bgAudioTip">
                     <i class="fas fa-info-circle"></i>
-                    <p><strong>¿Quieres escuchar en segundo plano?</strong> En Android, puedes bloquear la pantalla o
-                        cambiar de app y el audio seguirá reproduciéndose. Si se detiene, ve a <em>Ajustes &gt; Apps
-                            &gt; Chrome &gt; Batería</em> y selecciona <strong>"Sin restricciones"</strong>.</p>
+                    <p><strong>¿Quieres escuchar en segundo plano?</strong> En Android, bloquea la pantalla o cambia de
+                        app y el audio seguirá sonando. Si se detiene, ve a <em>Ajustes &gt; Apps &gt; Chrome &gt;
+                            Batería</em> y selecciona <strong>"Sin restricciones"</strong>.</p>
                 </div>
             </div>
         </section>
 
-        <!-- ===== INFO ===== -->
-        <section class="info-section">
+        <!-- ===== INFO + VISITANTES (unificadas) ===== -->
+        <section class="info-section" id="infoSection">
             <div class="container">
                 <div class="info-grid">
                     <div class="info-card info-card--about">
@@ -170,13 +169,19 @@
                             <span><i class="fas fa-signal"></i> 105.1 MHz FM</span>
                             <span><i class="fas fa-microphone-alt"></i> Transmisión en vivo</span>
                         </div>
+                        <!-- ===== CONTADOR DE VISITANTES (rediseñado + animación) ===== -->
+                        <div class="visitor-counter" id="visitorCounter">
+                            <i class="fas fa-eye"></i>
+                            <span id="visitorCount">0</span>
+                            <small>visitas</small>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- ===== SOCIAL ===== -->
-        <section class="social-section">
+        <section class="social-section" id="socialSection">
             <div class="container">
                 <h2 class="social-section__title">
                     <i class="fas fa-hashtag"></i> Conéctate con nosotros
@@ -185,7 +190,7 @@
 
                 <div class="social-grid">
                     <a href="https://www.facebook.com/LamasPrendida105.1fm/?locale=es_LA" target="_blank"
-                        rel="noopener noreferrer" class="social-card social-card--facebook" id="socialFacebook">
+                        rel="noopener noreferrer" class="social-card social-card--facebook">
                         <div class="social-card__icon"><i class="fab fa-facebook-f"></i></div>
                         <div class="social-card__info">
                             <span class="social-card__name">Facebook</span>
@@ -193,8 +198,7 @@
                         </div>
                         <i class="fas fa-external-link-alt social-card__arrow"></i>
                     </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-card social-card--instagram"
-                        id="socialInstagram">
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-card social-card--instagram">
                         <div class="social-card__icon"><i class="fab fa-instagram"></i></div>
                         <div class="social-card__info">
                             <span class="social-card__name">Instagram</span>
@@ -203,7 +207,7 @@
                         <i class="fas fa-external-link-alt social-card__arrow"></i>
                     </a>
                     <a href="https://wa.me/+529511708538" target="_blank" rel="noopener noreferrer"
-                        class="social-card social-card--whatsapp" id="socialWhatsapp">
+                        class="social-card social-card--whatsapp">
                         <div class="social-card__icon"><i class="fab fa-whatsapp"></i></div>
                         <div class="social-card__info">
                             <span class="social-card__name">WhatsApp</span>
@@ -211,26 +215,38 @@
                         </div>
                         <i class="fas fa-external-link-alt social-card__arrow"></i>
                     </a>
-
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- ===== FOOTER ===== -->
-    <footer class="footer">
+    <!-- ===== FOOTER (con aviso legal y redes sociales) ===== -->
+    <footer class="footer" id="mainFooter">
         <div class="container">
             <div class="footer__inner">
                 <div class="footer__brand">
                     <img src="/img/imgLMP.jpg" alt="La Más Prendida" class="footer__logo" width="32" height="32"
-                        loading="lazy">
+                        loading="lazy" decoding="async">
                     <span>La Más Prendida</span>
                 </div>
                 <div>
                     <p class="footer__copy">&copy; <span id="footerYear"></span> La Más Prendida
-105.1 FM</p>
+                        105.1 FM</p>
                     <p class="footer__legal">Ocotlán de Morelos, Oaxaca, México · Uso
                         exclusivo para fines de difusión cultural y entretenimiento.</p>
+                </div>
+                <!-- ===== REDES SOCIALES EN FOOTER ===== -->
+                <div class="footer__socials">
+                    <a href="https://www.facebook.com/LamasPrendida105.1fm/?locale=es_LA" target="_blank"
+                        rel="noopener noreferrer" aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://wa.me/+529511708538" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
                 </div>
             </div>
         </div>
