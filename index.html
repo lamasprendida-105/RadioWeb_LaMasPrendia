@@ -77,109 +77,64 @@
   <!-- ===== MAIN CONTENT ===== -->
   <main>
 
-    <!-- ===== PLAYER SECTION (UNIFICADA: INICIO + DIRECTO) ===== -->
-    <section class="player-section" id="playerSection">
-      <div class="container">
-        <div class="player-card">
-          <!-- Cabecera -->
-          <div class="player-card__header">
-            <div class="player-card__header-left">
-              <div class="sound-bars" id="soundBars">
-                <span></span><span></span><span></span><span></span><span></span>
-              </div>
-              <div class="player-card__now-playing">
-                <span class="player-card__status-text" id="playerStatusText">Transmisión en vivo</span>
-                <span class="player-card__station-name">La Más Prendida 105.1 FM</span>
-              </div>
-            </div>
-            <div class="player-card__header-right">
-              <div class="header__live-badge header__live-badge--player" id="playerLiveBadge">
-                <span class="live-dot" id="playerLiveDot"></span>
-                <span class="live-text" id="playerLiveText">EN VIVO</span>
-              </div>
-            </div>
-          </div>
+        <!-- ===== PLAYER SECTION ===== -->
+        <section class="player-section" id="playerSection">
+            <div class="container">
+                <div class="player-card">
+                    <!-- Cabecera -->
+                    <div class="player-card__header">
+                        <div class="player-card__header-left">
+                            <div class="sound-bars" id="soundBars">
+                                <span></span><span></span><span></span><span></span><span></span>
+                            </div>
+                            <div class="player-card__now-playing">
+                                <span class="player-card__status-text" id="playerStatusText">Transmisión inactiva</span>
+                                <span class="player-card__station-name">La Más Prendida 105.1 FM</span>
+                            </div>
+                        </div>
+                        <div class="player-card__header-right">
+                            <div class="header__live-badge header__live-badge--player" id="playerLiveBadge">
+                                <span class="live-dot" id="playerLiveDot"></span>
+                                <span class="live-text" id="playerLiveText">OFFLINE</span>
+                            </div>
+                        </div>
+                    </div>
 
-          <!-- Reproductor Vimeo -->
-          <div class="player-card__video" id="videoWrapper">
-            <!-- Placeholder (se muestra cuando no hay video o durante la carga) -->
-            <div class="player-card__placeholder" id="playerPlaceholder">
-              <img src="/img/imgLMP.jpg" alt="La Más Prendida 105.1 FM" width="1280" height="720" loading="eager"
-                decoding="async">
-              <div class="player-card__placeholder-overlay" id="placeholderOverlay">
-                <i class="fas fa-satellite-dish"></i>
-                <p id="placeholderTitle">Cargando transmisión...</p>
-                <span id="placeholderSub">Prepárate para escuchar en línea</span>
-                <!-- Botón de reintento (visible solo en error) -->
-                <button class="btn-retry" id="retryBtn" style="display:none;">
-                  <i class="fas fa-redo"></i> Reintentar
-                </button>
-              </div>
+                    <!-- Reproductor Vimeo Event (responsive 16:9) -->
+                    <div class="player-card__video" id="videoWrapper">
+                        <iframe
+                            src="https://vimeo.com/event/6052730/embed"
+                            frameborder="0"
+                            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            title="La Más Prendida 105.1 FM — Transmisión en Vivo"
+                            id="vimeoIframe"
+                        ></iframe>
+                    </div>
+                </div>
             </div>
-            <!-- El iframe se inserta dinámicamente aquí -->
-          </div>
+        </section>
 
-          <!-- Controles -->
-          <div class="player-card__controls">
-            <button class="ctrl-btn" id="playPauseBtn" aria-label="Reproducir o pausar">
-              <i class="fas fa-play" id="playPauseIcon"></i>
-            </button>
-
-            <div class="ctrl-volume">
-              <button class="ctrl-btn ctrl-btn--small" id="muteBtn" aria-label="Silenciar">
-                <i class="fas fa-volume-up" id="muteIcon"></i>
-              </button>
-              <input type="range" min="0" max="100" value="80" class="volume-slider" id="volumeSlider"
-                aria-label="Volumen">
+        <!-- ===== INFO SECTION (unificada y limpia) ===== -->
+        <section class="info-section" id="infoSection">
+            <div class="container">
+                <div class="info-grid">
+                    <div class="info-card info-card--about">
+                        <div class="info-card__icon">
+                            <i class="fas fa-broadcast-tower"></i>
+                        </div>
+                        <h2>Sobre la Estación</h2>
+                        <p>La Más Prendida 105.1 FM es la estación de radio que lleva la mejor música y entretenimiento
+                            a Ocotlán de Morelos, Oaxaca y sus alrededores. ¡La que te prende!</p>
+                        <div class="info-card__tags">
+                            <span><i class="fas fa-map-marker-alt"></i> Ocotlán de Morelos, Oax.</span>
+                            <span><i class="fas fa-signal"></i> 105.1 MHz FM</span>
+                            <span><i class="fas fa-microphone-alt"></i> Transmisión en vivo</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="ctrl-info">
-              <span id="ctrlStationLabel">105.1 FM</span>
-            </div>
-
-            <button class="ctrl-btn ctrl-btn--small" id="fullscreenBtn" aria-label="Pantalla completa">
-              <i class="fas fa-expand"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- Tip para audio en segundo plano (solo móvil) -->
-        <div class="bg-audio-tip" id="bgAudioTip">
-          <i class="fas fa-info-circle"></i>
-          <p><strong>¿Quieres escuchar en segundo plano?</strong> En Android, bloquea la pantalla o cambia de
-            app y el audio seguirá sonando. Si se detiene, ve a <em>Ajustes &gt; Apps &gt; Chrome &gt;
-              Batería</em> y selecciona <strong>"Sin restricciones"</strong>.</p>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== INFO + VISITANTES (unificadas) ===== -->
-    <section class="info-section" id="infoSection">
-      <div class="container">
-        <div class="info-grid">
-          <div class="info-card info-card--about">
-            <div class="info-card__icon">
-              <i class="fas fa-broadcast-tower"></i>
-            </div>
-            <h2>Sobre la Estación</h2>
-            <p>La Más Prendida 105.1 FM es la estación de radio que lleva la mejor música y entretenimiento
-              a Ocotlán de Morelos, Oaxaca y sus alrededores. ¡La que te prende!</p>
-            <div class="info-card__tags">
-              <span><i class="fas fa-map-marker-alt"></i> Ocotlán de Morelos, Oax.</span>
-              <span><i class="fas fa-signal"></i> 105.1 MHz FM</span>
-              <span><i class="fas fa-microphone-alt"></i> Transmisión en vivo</span>
-            </div>
-            <!-- ===== CONTADOR DE VISITANTES (rediseñado + animación) ===== -->
-            <div class="visitor-counter" id="visitorCounter">
-              <i class="fas fa-eye"></i>
-              <span id="visitorCount">0</span>
-              <small>visitas</small>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+        </section>
 
     <!-- ===== SOCIAL ===== -->
     <section class="social-section" id="socialSection">
