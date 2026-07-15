@@ -2,9 +2,15 @@
 // main.js — Punto de entrada de la aplicación
 // ============================================
 
+// Si el usuario entra a una subruta inexistente (ej. /robots),
+// limpia la barra de direcciones y lo devuelve al index principal.
+if (window.location.pathname !== '/' && window.location.pathname !== '/index.html') {
+  window.history.replaceState(null, '', '/');
+}
+
+
 import { initTheme, toggleTheme } from './modules/theme.js';
 import { initPlayer } from './modules/player.js';
-import { initVisitorCounter } from './modules/visitor.js';
 import { initUI } from './modules/ui.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,12 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inicializar interfaz de usuario (footer year, etc.)
   initUI();
 
-  // Inicializar reproductor Vimeo
-  const videoId = null; // Reemplazar con ID real
-  initPlayer(videoId);
-
-  // Inicializar contador de visitantes
-  initVisitorCounter();
+  // Inicializar reproductor Vimeo Event (iframe embebido en HTML)
+  initPlayer();
 
   // Exponer toggleTheme globalmente para el botón
   const themeToggle = document.getElementById('themeToggle');

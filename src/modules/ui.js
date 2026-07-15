@@ -110,12 +110,17 @@ export function updateMuteUI(muted, volume) {
 export function updateLiveState(live) {
   const dot = document.getElementById('playerLiveDot');
   const text = document.getElementById('playerLiveText');
-  if (dot) {
-    dot.classList.toggle('paused', !live);
-  }
+  const statusText = document.getElementById('playerStatusText');
+
+  if (dot) dot.classList.toggle('paused', !live);
+
   if (text) {
-    text.textContent = live ? 'EN VIVO' : 'PAUSADO';
+    text.textContent = live ? 'EN VIVO' : 'OFFLINE';
     text.style.color = live ? LIVE_COLOR_ON : LIVE_COLOR_OFF;
+  }
+
+  if (statusText) {
+    statusText.textContent = live ? 'Transmisión en vivo' : 'Transmisión inactiva';
   }
 }
 
@@ -133,4 +138,40 @@ export function initUI() {
   if (tip && !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
     tip.style.display = 'none';
   }
+
+  // Ocultar/mostrar header al scrollear
+  setupScrollHeader();
+}
+
+function setupScrollHeader() {
+  const header = document.getElementById('mainHeader');
+  if (!header) return;
+
+  let lastScrollY = window.scrollY;
+  const scrollThreshold = 10; // Tolerancia en pixeles para evitar parpadeos
+  const minScroll = 80; // No ocultar hasta pasar 80px de scroll
+
+  window.addEventListener('scroll', () => {
+    const currentScrollY = window.scrollY;
+
+    // Ignorar rebote elástico en móviles (iOS)
+    if (currentScrollY < 0 || currentScrollY + window.innerHeight > document.documentElement.scrollHeight) {
+      return;
+    }
+
+    // Verificar si el cambio supera el umbral de tolerancia
+    if (Math.abs(currentScrollY - lastScrollY) < scrollThreshold) {
+      return;
+    }
+
+    if (currentScrollY > lastScrollY && currentScrollY > minScroll) {
+      // Scrolleando hacia abajo -> ocultar header
+      header.classList.add('header--hidden');
+    } else if (currentScrollY < lastScrollY) {
+      // Scrolleando hacia arriba -> mostrar header
+      header.classList.remove('header--hidden');
+    }
+
+    lastScrollY = currentScrollY;
+  }, { passive: true });
 }

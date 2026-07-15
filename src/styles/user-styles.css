@@ -247,9 +247,6 @@ ol {
   }
 }
 
-.visitor-counter span.pop {
-  animation: counterPop 0.3s ease forwards;
-}
 
 /* ----- 6. HEADER ----- */
 .header {
@@ -265,8 +262,14 @@ ol {
   padding-block: 14px;
   padding-top: calc(14px + env(safe-area-inset-top, 0px));
   contain: layout style;
-  transition: background-color 0.4s ease;
+  transition: background-color 0.4s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
+
+.header--hidden {
+  transform: translateY(-100%);
+}
+
 .header__inner {
   display: flex;
   align-items: center;
@@ -275,12 +278,14 @@ ol {
   margin-inline: auto;
   padding-inline: var(--container-pad);
 }
+
 .header__brand {
   display: flex;
   align-items: center;
   gap: 10px;
   min-width: 0;
 }
+
 .header__logo {
   width: 40px;
   height: 40px;
@@ -290,42 +295,53 @@ ol {
   border: 1px solid var(--clr-border);
   transition: border-color var(--transition-fast), transform var(--transition-fast);
 }
+
 .header__logo:hover {
   border-color: var(--clr-primary);
   transform: scale(1.04);
 }
+
 .header__text {
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
+
 .header__title {
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--clr-text);
+  letter-spacing: -0.01em;
   transition: color 0.4s ease;
 }
+
 .header__title span {
   color: var(--clr-primary);
+  background: linear-gradient(135deg, #E31B23 0%, #F58220 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   transition: color 0.4s ease;
 }
+
 .header__subtitle {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: var(--clr-text-muted);
-  font-weight: 500;
-  letter-spacing: 0.03em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   transition: color 0.4s ease;
 }
+
 .header__actions {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
 }
+
 .theme-toggle {
   width: 40px;
   height: 40px;
@@ -338,18 +354,21 @@ ol {
   transition: transform var(--transition-fast), background var(--transition-fast),
     border-color var(--transition-fast), color 0.4s ease;
 }
+
 .theme-toggle:hover {
   background: var(--clr-border-hover);
   border-color: var(--clr-primary);
   transform: rotate(30deg);
 }
+
 .theme-toggle:active {
   transform: rotate(60deg) scale(0.9);
 }
 
+
 /* ----- 7. PLAYER SECTION ----- */
 .player-section {
-  padding: 24px 0 32px;
+  padding: 36px 0 32px;
   contain: content;
 }
 .player-card {
@@ -748,37 +767,6 @@ ol {
   color: var(--clr-accent-orange);
 }
 
-/* ===== VISITOR COUNTER (con animación) ===== */
-.visitor-counter {
-  margin-top: 20px;
-  padding: 12px 18px;
-  background: var(--clr-bg-elevated);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--clr-border);
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--clr-text-secondary);
-}
-.visitor-counter i {
-  color: var(--clr-primary);
-  font-size: 1.2rem;
-}
-.visitor-counter span {
-  font-size: 1.3rem;
-  font-weight: 800;
-  color: var(--clr-text);
-  display: inline-block; /* Necesario para que la animación funcione */
-  min-width: 2ch;
-  text-align: center;
-}
-.visitor-counter small {
-  font-size: 0.75rem;
-  font-weight: 400;
-  color: var(--clr-text-muted);
-}
 
 /* ----- 9. SOCIAL SECTION ----- */
 .social-section {
@@ -909,6 +897,7 @@ ol {
 .footer__brand {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
 }
 .footer__logo {
@@ -919,13 +908,13 @@ ol {
 }
 .footer__copy {
   font-size: 0.78rem;
-  color: var(--clr-text-muted);
+  color: var(--clr-text-secondary);
   line-height: 1.6;
 }
 .footer__legal {
   font-size: 0.72rem;
-  color: var(--clr-text-muted);
-  opacity: 0.7;
+  color: var(--clr-text-secondary);
+  opacity: 0.85;
   line-height: 1.5;
 }
 .footer__socials {
@@ -971,9 +960,9 @@ ol {
     max-width: 220px;
   }
   .footer__inner {
-    flex-direction: row;
-    justify-content: space-between;
-    text-align: left;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 }
 
@@ -1071,8 +1060,6 @@ ol {
     animation: none !important;
     will-change: auto;
   }
-  .visitor-counter span {
-    animation: none !important;
   }
 }
 
