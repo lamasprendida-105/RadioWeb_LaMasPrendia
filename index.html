@@ -4,19 +4,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+  <!-- ========== META DESCRIPTION & KEYWORDS ========== -->
   <meta name="description"
-    content="Escucha en vivo La Más Prendida 105.1 FM — Transmisión oficial en línea. ¡La que te prende! Ocotlán de Morelos, Oaxaca.">
+    content="Escucha en vivo La Más Prendida 105.1 FM — la radio que te prende. Transmisión en línea desde Ocotlán de Morelos, Oaxaca. Música, entretenimiento y más. ¡La que te prende!">
+  <meta name="keywords"
+    content="radio en vivo, La Más Prendida, 105.1 FM, Ocotlán de Morelos, Oaxaca, radio online, música, transmisión en vivo, estación de radio">
+  <meta name="author" content="La Más Prendida 105.1 FM">
+  <meta name="geo.placename" content="Ocotlán de Morelos, Oaxaca">
+  <meta name="geo.region" content="MX-OAX">
+
+  <!-- ========== TITLE ADAPTADO ========== -->
+  <title>La Más Prendida 105.1 FM | Escucha en Vivo Radio Ocotlán de Morelos, Oaxaca</title>
+
+  <!-- ========== OPEN GRAPH (para compartir en redes) ========== -->
+  <meta property="og:title" content="La Más Prendida 105.1 FM – Escucha en Vivo Radio Ocotlán de Morelos">
+  <meta property="og:description"
+    content="Sintoniza La Más Prendida 105.1 FM en vivo. La radio que te prende con la mejor música y entretenimiento desde Ocotlán de Morelos, Oaxaca.">
+  <meta property="og:image" content="https://lamasprendida.mx/img/imgLMP.jpg">
+  <meta property="og:url" content="https://lamasprendida.mx/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="La Más Prendida 105.1 FM">
+
+  <!-- ========== TWITTER CARDS ========== -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="La Más Prendida 105.1 FM – Escucha en Vivo Radio Ocotlán de Morelos">
+  <meta name="twitter:description"
+    content="Sintoniza La Más Prendida 105.1 FM en vivo. La radio que te prende con la mejor música y entretenimiento desde Ocotlán de Morelos, Oaxaca.">
+  <meta name="twitter:image" content="https://lamasprendida.mx/img/imgLMP.jpg">
+
+  <!-- ========== META PARA APPS Y TEMA ========== -->
   <meta name="theme-color" content="#E63946">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>La Más Prendida 105.1 FM | En Vivo</title>
+
+  <!-- ========== MANIFEST, ICON, PRELOAD ========== -->
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/jpeg" href="/img/imgLMP.jpg">
-
-  <!-- Preload -->
   <link rel="preload" as="image" href="/img/imgLMP.jpg" fetchpriority="high">
 
-  <!-- Anti‑flash script -->
+  <!-- ========== ANTI‑FLASH SCRIPT (se mantiene igual) ========== -->
   <script>
     (function () {
       try {
@@ -32,24 +59,51 @@
     })();
   </script>
 
-  <!-- Preconnect -->
+  <!-- ========== PRECONNECT ========== -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
   <link rel="preconnect" href="https://player.vimeo.com">
 
-  <!-- Fuentes y Font Awesome -->
+  <!-- ========== FUENTES Y FONT AWESOME ========== -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700;800;900&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <!-- CSS principal -->
+  <!-- ========== CSS PRINCIPAL ========== -->
   <link rel="stylesheet" href="/src/styles/user-styles.css">
 
-  <!-- Vimeo Player SDK (cargado bajo demanda) -->
+  <!-- ========== DATOS ESTRUCTURADOS (JSON‑LD) ========== -->
+  <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "RadioStation",
+            "name": "La Más Prendida 105.1 FM",
+            "alternateName": "La Más Prendida",
+            "description": "Estación de radio en vivo desde Ocotlán de Morelos, Oaxaca. Transmisión de música y entretenimiento. ¡La que te prende!",
+            "url": "https://lamasprendida.mx/",
+            "logo": "https://lamasprendida.mx/img/imgLMP.jpg",
+            "image": "https://lamasprendida.mx/img/imgLMP.jpg",
+            "broadcastFrequency": "105.1 FM",
+            "broadcastTimezone": "America/Mexico_City",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Ocotlán de Morelos",
+                "addressRegion": "Oaxaca",
+                "addressCountry": "MX"
+            },
+            "sameAs": [
+                "https://www.facebook.com/LamasPrendida105.1fm/",
+                "https://www.instagram.com/lamasprendida105.1fm/",
+                "https://www.tiktok.com/@lamasprendida105.1fm"
+            ]
+        }
+    </script>
+
+  <!-- ========== VIMEO PLAYER SDK (cargado bajo demanda) ========== -->
   <script src="https://player.vimeo.com/api/player.js" defer></script>
 
-  <!-- JavaScript modular (entry point) -->
+  <!-- ========== JAVASCRIPT MODULAR (entry point) ========== -->
   <script type="module" src="/src/main.js"></script>
 </head>
 
@@ -77,64 +131,106 @@
   <!-- ===== MAIN CONTENT ===== -->
   <main>
 
-        <!-- ===== PLAYER SECTION ===== -->
-        <section class="player-section" id="playerSection">
-            <div class="container">
-                <div class="player-card">
-                    <!-- Cabecera -->
-                    <div class="player-card__header">
-                        <div class="player-card__header-left">
-                            <div class="sound-bars" id="soundBars">
-                                <span></span><span></span><span></span><span></span><span></span>
-                            </div>
-                            <div class="player-card__now-playing">
-                                <span class="player-card__status-text" id="playerStatusText">Transmisión inactiva</span>
-                                <span class="player-card__station-name">La Más Prendida 105.1 FM</span>
-                            </div>
-                        </div>
-                        <div class="player-card__header-right">
-                            <div class="header__live-badge header__live-badge--player" id="playerLiveBadge">
-                                <span class="live-dot" id="playerLiveDot"></span>
-                                <span class="live-text" id="playerLiveText">OFFLINE</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Reproductor Vimeo Event (responsive 16:9) -->
-                    <div class="player-card__video" id="videoWrapper">
-                        <iframe
-                            src="https://vimeo.com/event/6052730/embed"
-                            frameborder="0"
-                            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-                            referrerpolicy="strict-origin-when-cross-origin"
-                            title="La Más Prendida 105.1 FM — Transmisión en Vivo"
-                            id="vimeoIframe"
-                        ></iframe>
-                    </div>
-                </div>
+    <!-- ===== PLAYER SECTION ===== -->
+    <section class="player-section" id="playerSection">
+      <div class="container">
+        <div class="player-card">
+          <!-- Cabecera -->
+          <div class="player-card__header">
+            <div class="player-card__header-left">
+              <div class="sound-bars" id="soundBars">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+              <div class="player-card__now-playing">
+                <span class="player-card__status-text" id="playerStatusText">Transmisión inactiva</span>
+                <span class="player-card__station-name">La Más Prendida 105.1 FM</span>
+              </div>
             </div>
-        </section>
-
-        <!-- ===== INFO SECTION (unificada y limpia) ===== -->
-        <section class="info-section" id="infoSection">
-            <div class="container">
-                <div class="info-grid">
-                    <div class="info-card info-card--about">
-                        <div class="info-card__icon">
-                            <i class="fas fa-broadcast-tower"></i>
-                        </div>
-                        <h2>Sobre la Estación</h2>
-                        <p>La Más Prendida 105.1 FM es la estación de radio que lleva la mejor música y entretenimiento
-                            a Ocotlán de Morelos, Oaxaca y sus alrededores. ¡La que te prende!</p>
-                        <div class="info-card__tags">
-                            <span><i class="fas fa-map-marker-alt"></i> Ocotlán de Morelos, Oax.</span>
-                            <span><i class="fas fa-signal"></i> 105.1 MHz FM</span>
-                            <span><i class="fas fa-microphone-alt"></i> Transmisión en vivo</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="player-card__header-right">
+              <div class="header__live-badge header__live-badge--player" id="playerLiveBadge">
+                <span class="live-dot" id="playerLiveDot"></span>
+                <span class="live-text" id="playerLiveText">OFFLINE</span>
+              </div>
             </div>
-        </section>
+          </div>
+
+          <!-- Reproductor Vimeo Event (responsive 16:9) -->
+          <div class="player-card__video" id="videoWrapper">
+            <iframe src="https://vimeo.com/event/6052730/embed" frameborder="0"
+              allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+              referrerpolicy="strict-origin-when-cross-origin" title="La Más Prendida 105.1 FM — Transmisión en Vivo"
+              id="vimeoIframe"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== RADIO PLAYER SECTION ===== -->
+    <section class="radio-section" id="radioSection">
+      <div class="container">
+        <div class="radio-card">
+          <!-- Header -->
+          <div class="radio-card__header">
+            <div class="radio-card__header-left">
+              <div class="sound-bars radio-sound-bars" id="radioSoundBars">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+              <div class="radio-card__now-playing">
+                <span class="radio-card__status-text" id="radioStatusText">Iniciando radio...</span>
+                <span class="radio-card__station-name">La Más Prendida 105.1 FM — Radio</span>
+              </div>
+            </div>
+            <div class="radio-card__header-right">
+              <div class="header__live-badge header__live-badge--radio" id="radioLiveBadge">
+                <span class="live-dot" id="radioLiveDot"></span>
+                <span class="live-text" id="radioLiveText">OFFLINE</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hidden iframe container (audio only) -->
+          <div class="radio-card__audio" id="radioAudioWrapper">
+            <!-- Vimeo iframe will be injected here (hidden, audio-only) -->
+          </div>
+
+          <!-- Controls -->
+          <div class="radio-card__controls">
+            <button class="ctrl-btn" id="radioPlayPauseBtn" aria-label="Play/Pause">
+              <i class="fas fa-play" id="radioPlayPauseIcon"></i>
+            </button>
+            <div class="ctrl-volume">
+              <button class="ctrl-btn ctrl-btn--small" id="radioMuteBtn" aria-label="Silenciar">
+                <i class="fas fa-volume-up" id="radioMuteIcon"></i>
+              </button>
+              <input type="range" class="volume-slider" id="radioVolumeSlider" min="0" max="100" value="80"
+                aria-label="Volumen">
+            </div>
+            <span class="ctrl-info" id="radioCtrlInfo">Radio · Solo audio</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== INFO SECTION (unificada y limpia) ===== -->
+    <section class="info-section" id="infoSection">
+      <div class="container">
+        <div class="info-grid">
+          <div class="info-card info-card--about">
+            <div class="info-card__icon">
+              <i class="fas fa-broadcast-tower"></i>
+            </div>
+            <h2>Sobre la Estación</h2>
+            <p>La Más Prendida 105.1 FM es la estación de radio que lleva la mejor música y entretenimiento
+              a Ocotlán de Morelos, Oaxaca y sus alrededores. ¡La que te prende!</p>
+            <div class="info-card__tags">
+              <span><i class="fas fa-map-marker-alt"></i> Ocotlán de Morelos, Oax.</span>
+              <span><i class="fas fa-signal"></i> 105.1 MHz FM</span>
+              <span><i class="fas fa-microphone-alt"></i> Transmisión en vivo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- ===== SOCIAL ===== -->
     <section class="social-section" id="socialSection">
