@@ -124,6 +124,120 @@ export function updateLiveState(live) {
   }
 }
 
+// ─── RADIO PLAYER UI ──────────────────────────────────────────────────────────
+
+const radioSoundBars     = document.getElementById('radioSoundBars');
+const radioStatusText    = document.getElementById('radioStatusText');
+const radioLiveDot       = document.getElementById('radioLiveDot');
+const radioLiveText      = document.getElementById('radioLiveText');
+const radioPlayPauseIcon = document.getElementById('radioPlayPauseIcon');
+const radioMuteIcon      = document.getElementById('radioMuteIcon');
+
+/**
+ * Actualiza la UI del reproductor de radio según el estado.
+ * @param {string} state - 'playing' | 'paused' | 'ended' | 'error' | 'waiting' | 'offline'
+ */
+export function updateRadioPlayerUI(state) {
+  const states = {
+    playing: {
+      icon: 'fa-pause',
+      barsPaused: false,
+      status: 'Transmisión en vivo',
+      dotPaused: false,
+      liveLabel: 'EN VIVO',
+      liveColor: LIVE_COLOR_ON,
+    },
+    paused: {
+      icon: 'fa-play',
+      barsPaused: true,
+      status: 'En pausa',
+      dotPaused: true,
+      liveLabel: 'PAUSADO',
+      liveColor: LIVE_COLOR_OFF,
+    },
+    ended: {
+      icon: 'fa-redo',
+      barsPaused: true,
+      status: 'Transmisión finalizada',
+      dotPaused: true,
+      liveLabel: 'FIN',
+      liveColor: LIVE_COLOR_OFF,
+    },
+    error: {
+      icon: 'fa-exclamation-triangle',
+      barsPaused: true,
+      status: 'Error de conexión',
+      dotPaused: true,
+      liveLabel: 'ERROR',
+      liveColor: '#FF6B35',
+    },
+    waiting: {
+      icon: 'fa-tower-broadcast',
+      barsPaused: true,
+      status: 'Transmisión inactiva',
+      dotPaused: true,
+      liveLabel: 'OFFLINE',
+      liveColor: LIVE_COLOR_OFF,
+    },
+    offline: {
+      icon: 'fa-radio',
+      barsPaused: true,
+      status: 'Radio offline',
+      dotPaused: true,
+      liveLabel: 'OFFLINE',
+      liveColor: LIVE_COLOR_OFF,
+    },
+  };
+
+  const s = states[state] || states.waiting;
+
+  if (radioPlayPauseIcon) radioPlayPauseIcon.className = `fas ${s.icon}`;
+  if (radioSoundBars) radioSoundBars.classList.toggle('paused', s.barsPaused);
+  if (radioStatusText) radioStatusText.textContent = s.status;
+  if (radioLiveDot) radioLiveDot.classList.toggle('paused', s.dotPaused);
+  if (radioLiveText) {
+    radioLiveText.textContent = s.liveLabel;
+    radioLiveText.style.color = s.liveColor;
+  }
+}
+
+/**
+ * Actualiza la UI de volumen y mute del radio.
+ * @param {boolean} muted - Si está silenciado
+ * @param {number} volume - Volumen actual (0-1)
+ */
+export function updateRadioMuteUI(muted, volume) {
+  if (!radioMuteIcon) return;
+  const vol = muted ? 0 : volume;
+  if (vol === 0) {
+    radioMuteIcon.className = 'fas fa-volume-mute';
+  } else if (vol < 0.5) {
+    radioMuteIcon.className = 'fas fa-volume-down';
+  } else {
+    radioMuteIcon.className = 'fas fa-volume-up';
+  }
+
+  const slider = document.getElementById('radioVolumeSlider');
+  if (slider) {
+    slider.value = Math.round(vol * 100);
+  }
+}
+
+/**
+ * Actualiza el estado EN VIVO del radio.
+ * @param {boolean} live - Si está en vivo
+ */
+export function updateRadioLiveState(live) {
+  if (radioLiveDot) radioLiveDot.classList.toggle('paused', !live);
+  if (radioLiveText) {
+    radioLiveText.textContent = live ? 'EN VIVO' : 'OFFLINE';
+    radioLiveText.style.color = live ? LIVE_COLOR_ON : LIVE_COLOR_OFF;
+  }
+  if (radioStatusText) {
+    radioStatusText.textContent = live ? 'Transmisión en vivo' : 'Transmisión inactiva';
+  }
+}
+
 /**
  * Inicializa elementos de UI general (año del footer).
  */

@@ -11,6 +11,7 @@ if (window.location.pathname !== '/' && window.location.pathname !== '/index.htm
 
 import { initTheme, toggleTheme } from './modules/theme.js';
 import { initPlayer } from './modules/player.js';
+import { initRadioPlayer } from './modules/radio-player.js';
 import { initUI } from './modules/ui.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -22,6 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Inicializar reproductor Vimeo Event (iframe embebido en HTML)
   initPlayer();
+
+  // Inicializar reproductor de radio (audio-only, auto-play)
+  initRadioPlayer(null);
 
   // Exponer toggleTheme globalmente para el botón
   const themeToggle = document.getElementById('themeToggle');
