@@ -65,12 +65,17 @@
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
   <link rel="preconnect" href="https://player.vimeo.com">
 
-  <!-- ========== FUENTES Y FONT AWESOME ========== -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700;800;900&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- ========== FUENTES Y FONT AWESOME (Optimizado y no bloqueante) ========== -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700;800;900&display=swap" as="style">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  </noscript>
 
-  <!-- ========== CSS PRINCIPAL ========== -->
+  <!-- ========== CSS PRINCIPAL (Bloqueante por ser crítico) ========== -->
   <link rel="stylesheet" href="/src/styles/user-styles.css">
 
   <!-- ========== DATOS ESTRUCTURADOS (JSON‑LD) ========== -->
@@ -220,8 +225,7 @@
               <i class="fas fa-broadcast-tower"></i>
             </div>
             <h2>Sobre la Estación</h2>
-            <p>La Más Prendida 105.1 FM es la estación de radio que lleva la mejor música y entretenimiento
-              a Ocotlán de Morelos, Oaxaca y sus alrededores. ¡La que te prende!</p>
+            <p>La Más Prendida 105.1 FM es la estación de radio que lleva la mejor música y entretenimiento a Ocotlán de Morelos, Oaxaca y sus alrededores. ¡La que te prende!</p>
             <div class="info-card__tags">
               <span><i class="fas fa-map-marker-alt"></i> Ocotlán de Morelos, Oax.</span>
               <span><i class="fas fa-signal"></i> 105.1 MHz FM</span>
@@ -241,6 +245,7 @@
         <p class="social-section__subtitle">Síguenos en redes sociales o envíanos un mensaje</p>
 
         <div class="social-grid">
+          <!-- Facebook -->
           <a href="https://www.facebook.com/LamasPrendida105.1fm/?locale=es_LA" target="_blank"
             rel="noopener noreferrer" class="social-card social-card--facebook">
             <div class="social-card__icon"><i class="fab fa-facebook-f"></i></div>
@@ -250,7 +255,9 @@
             </div>
             <i class="fas fa-external-link-alt social-card__arrow"></i>
           </a>
-          <a href="#" target="_blank" rel="noopener noreferrer" class="social-card social-card--instagram">
+          <!-- Instagram -->
+          <a href="https://www.instagram.com/lamasprendida105.1" target="_blank" rel="noopener noreferrer"
+            class="social-card social-card--instagram">
             <div class="social-card__icon"><i class="fab fa-instagram"></i></div>
             <div class="social-card__info">
               <span class="social-card__name">Instagram</span>
@@ -258,12 +265,42 @@
             </div>
             <i class="fas fa-external-link-alt social-card__arrow"></i>
           </a>
+          <!-- TikTok -->
+          <a href="https://vm.tiktok.com/ZS9rNerv2Ur2f-DYNbO/" target="_blank" rel="noopener noreferrer"
+            class="social-card social-card--tiktok">
+            <div class="social-card__icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Capa Cyan (Fondo izquierdo) -->
+                <path d="M12.53 2H16.48C16.58 5.43 19.36 8.21 22.79 8.31V12.26C20.61 12.26 18.66 11.4 17.2 10.02V17.06C17.2 20.89 14.09 24 10.26 24C6.43 24 3.32 20.89 3.32 17.06C3.32 13.23 6.43 10.12 10.26 10.12C11.11 10.12 11.92 10.28 12.67 10.57V14.54C11.95 14.19 11.13 14 10.26 14C8.57 14 7.2 15.37 7.2 17.06C7.2 18.75 8.57 20.12 10.26 20.12C11.95 20.12 13.32 18.75 13.32 17.06V2H12.53Z" fill="#25F4EE"/>
+                <!-- Capa Roja (Fondo derecho) -->
+                <path d="M11.47 2H15.42C15.52 5.43 18.3 8.21 21.73 8.31V12.26C19.55 12.26 17.6 11.4 16.14 10.02V17.06C16.14 20.89 13.03 24 9.2 24C5.37 24 2.26 20.89 2.26 17.06C2.26 13.23 5.37 10.12 9.2 10.12C10.05 10.12 10.86 10.28 11.61 10.57V14.54C10.89 14.19 10.07 14 9.2 14C7.51 14 6.14 15.37 6.14 17.06C6.14 18.75 7.51 20.12 9.2 20.12C10.89 20.12 12.26 18.75 12.26 17.06V2H11.47Z" fill="#FE2C55"/>
+                <!-- Capa Blanca Principal (Frente) -->
+                <path d="M12 2H15.95C16.05 5.43 18.83 8.21 22.26 8.31V12.26C20.08 12.26 18.13 11.4 16.67 10.02V17.06C16.67 20.89 13.56 24 9.73 24C5.9 24 2.79 20.89 2.79 17.06C2.79 13.23 5.9 10.12 9.73 10.12C10.58 10.12 11.39 10.28 12.14 10.57V14.54C11.42 14.19 10.6 14 9.73 14C8.04 14 6.67 15.37 6.67 17.06C6.67 18.75 8.04 20.12 9.73 20.12C11.42 20.12 12.79 18.75 12.79 17.06V2H12Z" fill="#FFFFFF"/>
+              </svg>
+            </div>
+            <div class="social-card__info">
+              <span class="social-card__name">TikTok</span>
+              <span class="social-card__handle">La Más Prendida 105.1 FM</span>
+            </div>
+            <i class="fas fa-external-link-alt social-card__arrow"></i>
+          </a>
+          <!-- WhatsApp — Cabina (pide canciones/saludos) -->
+          <a href="https://wa.me/+529511261571" target="_blank"
+            rel="noopener noreferrer" class="social-card social-card--whatsapp">
+            <div class="social-card__icon"><i class="fab fa-whatsapp"></i></div>
+            <div class="social-card__info">
+              <span class="social-card__name">WhatsApp</span>
+              <span class="social-card__handle">Mensajes directos a la cabina en vivo</span>
+            </div>
+            <i class="fas fa-external-link-alt social-card__arrow"></i>
+          </a>
+          <!-- WhatsApp — Contacto general -->
           <a href="https://wa.me/+529511708538" target="_blank" rel="noopener noreferrer"
             class="social-card social-card--whatsapp">
             <div class="social-card__icon"><i class="fab fa-whatsapp"></i></div>
             <div class="social-card__info">
               <span class="social-card__name">WhatsApp</span>
-              <span class="social-card__handle">Envíanos un mensaje</span>
+              <span class="social-card__handle">Dudas, sugerencias y publicidad</span>
             </div>
             <i class="fas fa-external-link-alt social-card__arrow"></i>
           </a>
@@ -275,7 +312,7 @@
 
 
 
-  <!-- ===== FOOTER (con aviso legal y redes sociales) ===== -->
+  <!-- ===== FOOTER ===== -->
   <footer class="footer" id="mainFooter">
     <div class="container">
       <div class="footer__inner">
@@ -289,19 +326,6 @@
             105.1 FM</p>
           <p class="footer__legal">Ocotlán de Morelos, Oaxaca, México · Uso
             exclusivo para fines de difusión cultural y entretenimiento.</p>
-        </div>
-        <!-- ===== REDES SOCIALES EN FOOTER ===== -->
-        <div class="footer__socials">
-          <a href="https://www.facebook.com/LamasPrendida105.1fm/?locale=es_LA" target="_blank"
-            rel="noopener noreferrer" aria-label="Facebook">
-            <i class="fab fa-facebook-f"></i>
-          </a>
-          <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-            <i class="fab fa-instagram"></i>
-          </a>
-          <a href="https://wa.me/+529511708538" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
-            <i class="fab fa-whatsapp"></i>
-          </a>
         </div>
       </div>
     </div>

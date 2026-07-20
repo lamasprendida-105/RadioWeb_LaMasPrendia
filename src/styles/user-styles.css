@@ -973,14 +973,13 @@ ol {
   border-radius: var(--radius-md);
   text-decoration: none;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast),
-    border-color var(--transition-fast);
+    border-color var(--transition-fast), background-color var(--transition-fast);
   contain: content;
 }
 
 .social-card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-card);
-  border-color: var(--clr-border-hover);
 }
 
 .social-card__icon {
@@ -1005,6 +1004,7 @@ ol {
 
 .social-card--facebook:hover {
   border-color: var(--clr-facebook);
+  background-color: rgba(24, 119, 242, 0.05);
 }
 
 .social-card--instagram .social-card__icon {
@@ -1013,6 +1013,7 @@ ol {
 
 .social-card--instagram:hover {
   border-color: var(--clr-instagram);
+  background-color: rgba(228, 64, 95, 0.05);
 }
 
 .social-card--whatsapp .social-card__icon {
@@ -1021,6 +1022,24 @@ ol {
 
 .social-card--whatsapp:hover {
   border-color: var(--clr-whatsapp);
+  background-color: rgba(37, 211, 102, 0.05);
+}
+
+.social-card--tiktok .social-card__icon {
+  background: #000000;
+}
+
+.social-card--tiktok:hover {
+  border-color: #000000;
+}
+
+/* Fondos adaptativos en hover para TikTok segun el tema */
+html[data-theme='light'] .social-card--tiktok:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+html[data-theme='dark'] .social-card--tiktok:hover {
+  background-color: rgba(255, 255, 255, 0.03);
 }
 
 .social-card__info {
@@ -1119,10 +1138,38 @@ ol {
 }
 
 .footer__socials a:hover {
-  color: var(--clr-primary);
-  border-color: var(--clr-primary);
-  background: rgba(230, 57, 70, 0.08);
   transform: translateY(-2px);
+}
+
+/* Hover de Facebook */
+.footer__socials a[aria-label="Facebook"]:hover {
+  color: var(--clr-facebook);
+  border-color: var(--clr-facebook);
+  background: rgba(24, 119, 242, 0.08);
+}
+
+/* Hover de Instagram */
+.footer__socials a[aria-label="Instagram"]:hover {
+  color: #DD2A7B;
+  border-color: #DD2A7B;
+  background: rgba(221, 42, 123, 0.08);
+}
+
+/* Hover de TikTok */
+.footer__socials a[aria-label="TikTok"]:hover {
+  color: #FFFFFF;
+  border-color: #FE2C55;
+  background: #000000;
+  text-shadow:
+    -1px -0.5px 0 #25F4EE,
+     1px  0.5px 0 #FE2C55;
+}
+
+/* Hover de WhatsApp */
+.footer__socials a[aria-label^="WhatsApp"]:hover {
+  color: var(--clr-whatsapp);
+  border-color: var(--clr-whatsapp);
+  background: rgba(37, 211, 102, 0.08);
 }
 
 /* ----- 11. RESPONSIVE ----- */

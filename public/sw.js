@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lmp-radio-v2';
+const CACHE_NAME = 'lmp-radio-v3';
 const STATIC_ASSETS = [
   './',
   './index.html',
@@ -26,7 +26,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch — stale-while-revalidate for own assets, network-only for external
+// Fetch — Network-First for HTML/routing, Stale-While-Revalidate for other local assets
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
@@ -36,7 +36,30 @@ self.addEventListener('fetch', (event) => {
   // External requests (Vimeo, fonts, CDN) — network only, don't cache
   if (url.origin !== self.location.origin) return;
 
-  // Own assets: serve from cache first, update in background
+  // HTML / Index Page: Network-First
+  // Así aseguramos que cualquier cambio en la web se vea inmediatamente en la primera recarga.
+  const isHtmlRequest = 
+    event.request.mode === 'navigate' || 
+    url.pathname.endsWith('.html') || 
+    url.pathname === '/' || 
+    url.pathname === './';
+
+  if (isHtmlRequest) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request)) // Fallback al cache si está offline
+    );
+    return;
+  }
+
+  // Assets estáticos locales (imágenes, CSS, JS construidos): Stale-While-Revalidate
   event.respondWith(
     caches.open(CACHE_NAME).then((cache) =>
       cache.match(event.request).then((cached) => {
