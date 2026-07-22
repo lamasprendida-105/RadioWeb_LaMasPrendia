@@ -7,31 +7,30 @@
 //   3. visibilitychange para reanudar en Android al volver a la app
 //   4. Media Session API para controles en notificación y evitar
 //      que el sistema operativo mate el audio en segundo plano
-//   5. RECONEXIÓN AUTOMÁTICA (Polling silencioso): Si el stream está
-//      inactivo, recarga el iframe cada 25 segundos de forma invisible
-//      hasta detectar el inicio del en vivo, evitando recargar la web.
+//   5. RECONEXIÓN AUTOMÁTICA: Si el stream está inactivo, recarga
+//      el iframe cada 90 segundos de forma suave (fade) para detectar
+//      cuándo el broadcaster enciende el en vivo.
 
 import { updatePlayerUI, updateLiveState } from './ui.js';
 
-const VIMEO_SDK_URL   = 'https://player.vimeo.com/api/player.js';
-const LIVE_TIMEOUT_MS = 8000; // Si no hay 'playing' en 8s → OFFLINE
-const POLL_INTERVAL_MS = 25000; // Intentar reconectar cada 25s si está offline
+const VIMEO_SDK_URL    = 'https://player.vimeo.com/api/player.js';
+const LIVE_TIMEOUT_MS  = 8000;  // Si no hay 'playing' en 8s → OFFLINE
+const POLL_INTERVAL_MS = 90000; // Intentar reconectar cada 90s si está offline
 
 let player  = null;
 let isLive  = false;
 let pollTimeout = null;
 let initialCheckTimeout = null;
+let visibilityHandlerRegistered = false;
 
 // ─── Punto de entrada ────────────────────────────────────────────────────────
 export function initPlayer() {
-  // Estado inicial siempre esperando confirmación
   updatePlayerUI('waiting');
   updateLiveState(false);
 
-  // Carga el SDK y luego inicializa el player
   loadVimeoSDK()
     .then(setupPlayer)
-    .catch(() => console.warn('[player] No se pudo cargar el SDK de Vimeo'));
+    .catch(() => {});
 }
 
 // ─── Carga del SDK ───────────────────────────────────────────────────────────
@@ -68,15 +67,16 @@ function setupPlayer() {
     player.on('ended',   handleEnded);
     player.on('error',   handleError);
 
-    // Cancelar cualquier chequeo inicial previo antes de armar uno nuevo
     if (initialCheckTimeout) clearTimeout(initialCheckTimeout);
     initialCheckTimeout = setTimeout(checkInitialLiveStatus, LIVE_TIMEOUT_MS);
 
-    // Manejar visibilidad (Android: volver a app, bloquear pantalla, etc.)
-    setupVisibilityHandling();
+    // Solo registrar el listener de visibilidad una vez
+    if (!visibilityHandlerRegistered) {
+      setupVisibilityHandling();
+      visibilityHandlerRegistered = true;
+    }
 
-  } catch (e) {
-    console.warn('[player] Error al inicializar Vimeo.Player:', e);
+  } catch (_) {
     handleOffline();
   }
 }
@@ -87,12 +87,14 @@ function handlePlaying() {
   stopOfflinePolling();
   updatePlayerUI('playing');
   updateLiveState(true);
-  setupMediaSession(); // Activa controles en notificación del SO
+  setupMediaSession();
+
+  // Restaurar opacidad del iframe por si estaba en transición
+  const iframe = document.getElementById('vimeoIframe');
+  if (iframe) iframe.style.opacity = '1';
 }
 
 function handlePause() {
-  // En un evento en vivo, 'pause' casi siempre significa que el
-  // broadcaster pausó o terminó la transmisión → OFFLINE
   handleOffline();
   if ('mediaSession' in navigator) {
     navigator.mediaSession.playbackState = 'paused';
@@ -107,7 +109,6 @@ function handleError() {
   handleOffline();
 }
 
-// Maneja la caída o inactividad del stream
 function handleOffline() {
   isLive = false;
   updatePlayerUI('waiting');
@@ -117,28 +118,24 @@ function handleOffline() {
 
 // ─── Chequeo inicial tras timeout ────────────────────────────────────────────
 function checkInitialLiveStatus() {
-  if (isLive || !player) return; // Ya está en vivo, no hacemos nada
+  if (isLive || !player) return;
   player.getPaused()
     .then(paused => {
-      if (paused) {
-        handleOffline();
-      }
+      if (paused) handleOffline();
     })
-    .catch(() => {
-      handleOffline();
-    });
+    .catch(() => handleOffline());
 }
 
 // ─── Polling silencioso para reconexión ──────────────────────────────────────
-// Si la radio está inactiva, recarga el iframe periódicamente para detectar 
-// en segundo plano cuándo el emisor enciende el live stream en Vimeo.
+// Recarga el iframe de forma suave cada 90 segundos mientras el stream
+// esté inactivo, sin parpadeos visibles para el usuario.
 function startOfflinePolling() {
-  if (pollTimeout) return; // Ya hay un ciclo de reconexión corriendo
+  if (pollTimeout) return;
 
   pollTimeout = setTimeout(() => {
     pollTimeout = null;
 
-    // Si la pestaña está en segundo plano, no recargamos para ahorrar batería del usuario
+    // No recargar si la pestaña está en segundo plano (ahorro de batería)
     if (document.hidden) {
       startOfflinePolling();
       return;
@@ -159,9 +156,7 @@ function reloadIframe() {
   const iframe = document.getElementById('vimeoIframe');
   if (!iframe) return;
 
-  console.log('[player] Intentando reconexión silenciosa al stream de Vimeo...');
-
-  // Limpiar listeners del objeto actual antes de destruirlo
+  // Limpiar listeners del player actual
   if (player) {
     player.off('playing');
     player.off('pause');
@@ -170,15 +165,15 @@ function reloadIframe() {
     player = null;
   }
 
-  // Forzar recarga del iframe reasignando su src
+  // Recarga suave: solo reasignar el src (sin ponerlo en blanco primero)
+  // Esto evita el parpadeo/flash visible que causaba iframe.src = ''
   const currentSrc = iframe.src;
-  iframe.src = '';
   iframe.src = currentSrc;
 
-  // Re-inicializar el reproductor sobre el nuevo ciclo de carga
+  // Re-inicializar el reproductor tras un breve delay para que el iframe comience a cargar
   setTimeout(() => {
     setupPlayer();
-  }, 1000);
+  }, 1500);
 }
 
 // ─── Reanudación automática en Android ──────────────────────────────────────
@@ -186,18 +181,16 @@ function setupVisibilityHandling() {
   document.addEventListener('visibilitychange', () => {
     if (document.hidden || !player) return;
 
-    // Si volvimos a la pestaña activa y la radio debería estar transmitiendo, reanudar
     if (isLive) {
+      // Si estaba en vivo y volvimos a la pestaña, intentar reanudar
       player.getPaused()
         .then(paused => {
-          if (paused) {
-            player.play().catch(() => {});
-          }
+          if (paused) player.play().catch(() => {});
         })
         .catch(() => {});
     } else {
-      // Si la pestaña vuelve a estar visible y estábamos en polling de espera,
-      // intentamos forzar una reconexión inmediata para actualizar el estado rápido
+      // Si estaba offline y la pestaña vuelve a estar visible,
+      // forzar una reconexión inmediata
       stopOfflinePolling();
       reloadIframe();
     }
