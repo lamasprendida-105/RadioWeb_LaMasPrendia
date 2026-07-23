@@ -3,13 +3,12 @@
 // ============================================
 // Estrategia:
 //   1. SDK cargado con Promise (sin polling ni setInterval)
-//   2. Detección de estado en vivo via eventos del SDK
+//   2. Detección de estado en vivo via getDuration() del SDK:
+//      - duration === 0  → Es transmisión EN VIVO
+//      - duration > 0    → Es un video VOD (replay), NO es en vivo
 //   3. visibilitychange para reanudar en Android al volver a la app
-//   4. Media Session API para controles en notificación y evitar
-//      que el sistema operativo mate el audio en segundo plano
-//   5. RECONEXIÓN AUTOMÁTICA: Si el stream está inactivo, recarga
-//      el iframe cada 90 segundos de forma suave (fade) para detectar
-//      cuándo el broadcaster enciende el en vivo.
+//   4. Media Session API para controles en notificación
+//   5. Reconexión automática cada 90s cuando está offline
 
 import { updatePlayerUI, updateLiveState } from './ui.js';
 
@@ -70,7 +69,6 @@ function setupPlayer() {
     if (initialCheckTimeout) clearTimeout(initialCheckTimeout);
     initialCheckTimeout = setTimeout(checkInitialLiveStatus, LIVE_TIMEOUT_MS);
 
-    // Solo registrar el listener de visibilidad una vez
     if (!visibilityHandlerRegistered) {
       setupVisibilityHandling();
       visibilityHandlerRegistered = true;
@@ -82,31 +80,68 @@ function setupPlayer() {
 }
 
 // ─── Handlers de eventos del stream ─────────────────────────────────────────
-function handlePlaying() {
-  isLive = true;
-  stopOfflinePolling();
-  updatePlayerUI('playing');
-  updateLiveState(true);
-  setupMediaSession();
 
-  // Restaurar opacidad del iframe por si estaba en transición
+// Cuando el reproductor empieza a reproducir, verificamos si es un LIVE
+// o un VOD (replay) mediante la duración del contenido.
+function handlePlaying() {
+  if (!player) return;
+
+  player.getDuration()
+    .then(duration => {
+      if (duration <= 1) {
+        // ✅ Duration === 0: Es una transmisión EN VIVO
+        isLive = true;
+        stopOfflinePolling();
+        updatePlayerUI('playing');
+        updateLiveState(true);
+        setupMediaSession();
+      } else {
+        // 🎬 Duration > 1: Es un video VOD (replay), NO es en vivo
+        // No cambiamos el estado a "EN VIVO".
+        // Detenemos el polling para no interrumpir al usuario que ve el replay.
+        stopOfflinePolling();
+      }
+    })
+    .catch(() => {
+      // Si no podemos obtener la duración, no asumimos nada
+    });
+
   const iframe = document.getElementById('vimeoIframe');
   if (iframe) iframe.style.opacity = '1';
 }
 
 function handlePause() {
-  handleOffline();
+  if (isLive) {
+    // El broadcaster detuvo la transmisión en vivo → OFFLINE
+    isLive = false;
+    updatePlayerUI('waiting');
+    updateLiveState(false);
+    startOfflinePolling();
+  }
+  // Si es un VOD pausado por el usuario, no cambiamos nada.
+  // El usuario puede querer reanudar el replay.
   if ('mediaSession' in navigator) {
     navigator.mediaSession.playbackState = 'paused';
   }
 }
 
 function handleEnded() {
-  handleOffline();
+  if (isLive) {
+    // La transmisión en vivo terminó → OFFLINE
+    isLive = false;
+    updatePlayerUI('waiting');
+    updateLiveState(false);
+  }
+  // Tanto si era live como VOD, reanudar polling para detectar
+  // si inicia una nueva transmisión en vivo
+  startOfflinePolling();
 }
 
 function handleError() {
-  handleOffline();
+  isLive = false;
+  updatePlayerUI('waiting');
+  updateLiveState(false);
+  startOfflinePolling();
 }
 
 function handleOffline() {
@@ -127,15 +162,12 @@ function checkInitialLiveStatus() {
 }
 
 // ─── Polling silencioso para reconexión ──────────────────────────────────────
-// Recarga el iframe de forma suave cada 90 segundos mientras el stream
-// esté inactivo, sin parpadeos visibles para el usuario.
 function startOfflinePolling() {
   if (pollTimeout) return;
 
   pollTimeout = setTimeout(() => {
     pollTimeout = null;
 
-    // No recargar si la pestaña está en segundo plano (ahorro de batería)
     if (document.hidden) {
       startOfflinePolling();
       return;
@@ -156,7 +188,6 @@ function reloadIframe() {
   const iframe = document.getElementById('vimeoIframe');
   if (!iframe) return;
 
-  // Limpiar listeners del player actual
   if (player) {
     player.off('playing');
     player.off('pause');
@@ -165,12 +196,9 @@ function reloadIframe() {
     player = null;
   }
 
-  // Recarga suave: solo reasignar el src (sin ponerlo en blanco primero)
-  // Esto evita el parpadeo/flash visible que causaba iframe.src = ''
   const currentSrc = iframe.src;
   iframe.src = currentSrc;
 
-  // Re-inicializar el reproductor tras un breve delay para que el iframe comience a cargar
   setTimeout(() => {
     setupPlayer();
   }, 1500);
@@ -182,7 +210,6 @@ function setupVisibilityHandling() {
     if (document.hidden || !player) return;
 
     if (isLive) {
-      // Si estaba en vivo y volvimos a la pestaña, intentar reanudar
       player.getPaused()
         .then(paused => {
           if (paused) player.play().catch(() => {});
