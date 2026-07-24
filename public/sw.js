@@ -3,7 +3,8 @@ const STATIC_ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './img/imgLMP.jpg'
+  './img/imgLMP.jpg',
+  './silence.wav',   // keepAlive de audio para pantalla de bloqueo
 ];
 
 // Install — precache static assets

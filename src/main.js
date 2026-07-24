@@ -25,7 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initPlayer();
 
   // Inicializar reproductor de radio (audio-only, auto-play)
-  initRadioPlayer(null);
+  // ID del Vimeo Event de La Más Prendida 105.1 FM
+  initRadioPlayer('6056588');
 
   // Exponer toggleTheme globalmente para el botón
   const themeToggle = document.getElementById('themeToggle');
